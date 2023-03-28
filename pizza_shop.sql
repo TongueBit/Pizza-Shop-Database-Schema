@@ -58,10 +58,17 @@ VALUES (1, STR_TO_DATE('9/10/2014 9:47:00 AM', '%m/%d/%Y %h:%i:%s %p'), 27.98);
 insert into pizza_order(pizza_id, order_id, quantity) 
 values (3, LAST_INSERT_ID(), 1), (4, LAST_INSERT_ID(), 1);
 
-select c.name, sum(o.total) total_spent from customer c join `order` o on c.customer_id = o.customer_id group by c.customer_id;
+select c.name, sum(p.price*op.quantity) total_spent from customer c 
+join `order` o on c.customer_id = o.customer_id 
+join pizza_order op on o.order_id = op.order_id
+join pizza p on op.pizza_id = p.pizza_id
+group by c.customer_id ;
 
-select c.name, sum(o.total) total_cost, o.order_date from customer c join `order` o on c.customer_id = o.customer_id group by c.customer_id, o.order_date;
-
+select c.name, sum(p.price*op.quantity) total_spent, date(o.order_date) date from customer c
+join `order` o on c.customer_id = o.customer_id
+join pizza_order op on o.order_id = op.order_id
+join pizza p on op.pizza_id = p.pizza_id
+group by c.customer_id, o.order_date;
 
 
 
